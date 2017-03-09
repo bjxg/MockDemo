@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	    http://www.springframework.org/schema/context
+	    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	    http://www.springframework.org/schema/tx
+	    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	    http://www.springframework.org/schema/aop
+	    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	    http://www.springframework.org/schema/util 
+	    http://www.springframework.org/schema/util/spring-util-3.2.xsd">
+
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+	    <property name="driverClassName" value="${datasource.driverClassName}" />
+		<property name="url" value="${datasource.master.url}" />
+		<property name="username" value="${datasource.master.username}" />
+		<property name="password" value="${datasource.master.password}" />
+		<property name="initialSize" value="5"/>
+	    <property name="minIdle" value="5"/>
+	    <property name="maxActive" value="10"/>
+	    <property name="timeBetweenEvictionRunsMillis" value="10000"/>
+	    <property name="minEvictableIdleTimeMillis" value="20000"/>
+	    <property name="validationQuery" value="SELECT 'x'"/>
+	    <property name="testWhileIdle" value="true"/>
+	    <property name="testOnBorrow" value="false"/>
+	    <property name="testOnReturn" value="false"/>
+	    <property name="removeAbandoned" value="true"/>
+	    <property name="removeAbandonedTimeout" value="1800"/>
+	    <property name="logAbandoned" value="true"/>
+	    <property name="filters" value="stat"/>
+	    <property name="connectionProperties" value="druid.stat.slowSqlMillis=100"/>
+	</bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath*:me/bjxg/demo/mock/user/dao/*.xml</value>
+            </list>
+        </property>
+		<property name="configurationProperties">
+			<props>
+				<!--对在此配置文件下的所有cache 进行全局性开/关设置。-->
+				<prop key="cacheEnabled" >false</prop>
+				<!--全局性设置懒加载。如果设为‘false’，则所有相关联的都会被初始化加载。-->
+				<prop key="lazyLoadingEnabled" >false</prop>
+				<!--允许和不允许单条语句返回多个数据集（取决于驱动需求）-->
+				<prop key="multipleResultSetsEnabled" >true</prop>
+				<!--使用列标签代替列名称。不同的驱动器有不同的作法。参考一下驱动器文档，或者用这两个不同的选项进行测试一下。-->
+				<prop key="useColumnLabel" >true</prop>
+				<!--配置和设定执行器，SIMPLE 执行器执行其它语句。REUSE 执行器可能重复使用prepared statements 语句，BATCH执行器可以重复执行语句和批量更新。-->
+				<prop key="defaultExecutorType" >REUSE</prop>
+				<!--设置一个时限，以决定让驱动器等待数据库回应的多长时间为超时-->
+				<prop key="defaultStatementTimeout" >30000</prop>
+			</props>
+		</property>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="me.bjxg.demo.mock.user.dao"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+	
+	<!-- 事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 自动扫描事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+</beans>
