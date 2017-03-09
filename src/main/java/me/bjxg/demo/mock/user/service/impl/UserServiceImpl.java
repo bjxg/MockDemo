@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by chengcy on 2017/3/8.
@@ -33,7 +35,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByID(int userId) {
+    public List<User> getUserByIDs(int ...userIds) {
+        if(userIds==null||userIds.length==0) {
+            log.warn("查询参数异常：{}", userIds);
+            return null;
+        }
+
+        List<User> list = new ArrayList();
+        for(int userId:userIds){
+            User user=getUserByID(userId);
+            list.add(user);
+        }
+
+        return list;
+    }
+
+    private User getUserByID(int userId) {
         if(userId<=0) {
             log.warn("查询参数异常：{}", userId);
             return null;

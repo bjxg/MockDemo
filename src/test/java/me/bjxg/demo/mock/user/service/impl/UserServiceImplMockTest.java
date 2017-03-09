@@ -14,6 +14,8 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 
+import java.util.List;
+
 /**
  * Created by chengcy on 2017/3/9.
  */
@@ -22,7 +24,7 @@ public class UserServiceImplMockTest {
     @Rule
     public PowerMockRule powerMockRule;
 
-    UserServiceImpl userService = new UserServiceImpl();
+    UserServiceImpl userService = PowerMockito.spy(new UserServiceImpl());
 
     UserMapper userMapper = Mockito.mock(UserMapper.class) ;
 
@@ -44,17 +46,21 @@ public class UserServiceImplMockTest {
         Assert.assertEquals(count,1);
     }
 
+    /**
+     * 私有方法的mock
+     * @throws Exception
+     */
     @Test
-    public void testGetUserByID() throws Exception {
+    public void testGetUserByIDs() throws Exception {
         int userId=1;
         User user = new User();
         user.setId(userId);
+        // 模拟私有方法或者是 Final 方法时，依次指定模拟对象、被指定的函数名字以及针对该函数的输入参数列表
+        PowerMockito.when(userService,"getUserByID",userId).thenReturn(user);
+        List<User> list =  userService.getUserByIDs(userId);
+        log.info("测试结果：{}，查询结果：{}",list.size()>0,JSONObject.toJSON(list));
 
-        PowerMockito.when(userMapper.selectByPrimaryKey(Mockito.anyInt())).thenReturn(user);
-        User userResult =  userService.getUserByID(userId);
-        log.info("测试结果：{}，查询结果：{}",userResult.getId()==userId,JSONObject.toJSON(userResult));
-
-        Assert.assertTrue(userResult.getId()==userId);
+        Assert.assertTrue(list.size()>0);
     }
 
 }

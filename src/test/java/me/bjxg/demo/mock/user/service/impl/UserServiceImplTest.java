@@ -32,11 +32,5 @@ public class UserServiceImplTest {
 
         Assert.assertEquals(count,1);
     }
-    @Test
-    public void testGetUserByID() throws Exception {
-        User user =  userService.getUserByID(1);
-        log.info("查询结果：{}", JSONObject.toJSON(user));
 
-        Assert.assertTrue(user!=null);
-    }
 }
