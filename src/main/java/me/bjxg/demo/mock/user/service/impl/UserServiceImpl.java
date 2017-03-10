@@ -10,9 +10,7 @@ import me.bjxg.demo.mock.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import tk.mybatis.mapper.entity.Config;
 import tk.mybatis.mapper.entity.Example;
-import tk.mybatis.mapper.mapperhelper.EntityHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -45,6 +45,8 @@ public class UserServiceImplTest {
 
     @Test
     public void testGetUserByUsername() throws Exception {
+        testAddUser();
+
         String username = "ccy";
         User user = userService.getUserByUsername(username);
         log.info("查询记录：{},测试结果：{}", JSONObject.toJSON(user),user!=null);
@@ -60,14 +62,15 @@ public class UserServiceImplTest {
      */
     @Test
     public void testAddUserMock() throws Exception {
-        // mock userService 引用的userMapper对象的方法insert
+        // mock UserServiceImpl 引用的userMapper对象的方法insert
+        UserServiceImpl userServiceImpl = PowerMockito.spy(new UserServiceImpl());
         UserMapper userMapper = PowerMockito.mock(UserMapper.class);
-        ((UserServiceImpl)userService).setUserMapper(userMapper);
+        userServiceImpl.setUserMapper(userMapper);
         PowerMockito.when(userMapper.insert(Mockito.<User>any())).thenReturn(1);
 
         User user = new User();
         user.setUsername("ccy");
-        int count = userService.addUser(user);
+        int count = userServiceImpl.addUser(user);
         log.info("插入记录的数量：{},mock测试结果：{}",count,count==1);
 
         Assert.assertEquals(count,1);
