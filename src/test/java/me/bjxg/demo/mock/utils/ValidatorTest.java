@@ -20,7 +20,7 @@ public class ValidatorTest {
     public PowerMockRule powerMockRule = new PowerMockRule();
 
     @Test
-    public void isBlank() throws Exception {
+    public void testIsBlank() throws Exception {
         // 要mock本类部分方法时用spy，全部方法用mockStatic
         PowerMockito.spy(Validator.class);
         // 开始mock isEmpty方法，不管输入任何参数，总是返回false
