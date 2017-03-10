@@ -1,6 +1,7 @@
 package me.bjxg.demo.mock.user.service;
 
 import me.bjxg.demo.mock.user.model.User;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 
@@ -11,4 +12,6 @@ public interface UserService {
     int addUser(User record);
 
     List<User> getUserByIDs(int... userIds);
+
+    User getUserByUsername(String username);
 }

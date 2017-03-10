@@ -61,9 +61,9 @@
 		</property>
     </bean>
 
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="me.bjxg.demo.mock.user.dao"/>
-		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	<bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="me.bjxg.demo.mock.user.dao"/>
+		<property name="markerInterface" value="tk.mybatis.mapper.common.Mapper"/>
 	</bean>
 	
 	<!-- 事务管理器 -->

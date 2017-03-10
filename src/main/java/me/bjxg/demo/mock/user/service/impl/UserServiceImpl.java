@@ -6,10 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import me.bjxg.demo.mock.user.dao.UserMapper;
 import me.bjxg.demo.mock.user.model.User;
 import me.bjxg.demo.mock.user.service.UserService;
+import me.bjxg.demo.mock.utils.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.entity.Config;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.mapperhelper.EntityHelper;
 
-import javax.validation.constraints.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +53,24 @@ public class UserServiceImpl implements UserService {
 
         return list;
     }
+
+    @Override
+    public  User getUserByUsername(String username) {
+        if(Validator.isBlank(username)){
+            log.warn("查询参数异常：{}", username);
+            return null;
+        }
+
+        Example example = new Example(User.class);
+        example.createCriteria().andEqualTo("username",username);
+        List<User> list = userMapper.selectByExample(example);
+        if(CollectionUtils.isEmpty(list)){
+            return  null;
+        }
+
+        return list.get(0);
+    }
+
 
     private User getUserByID(int userId) {
         if(userId<=0) {
